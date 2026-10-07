@@ -14,7 +14,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete tagged package versions older than 1 year (keep newest 10)
+      - name: Delete tagged package versions older than 1 minute (keep newest 10)
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           older-than: 1 minute

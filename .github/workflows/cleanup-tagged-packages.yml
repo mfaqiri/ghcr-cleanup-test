@@ -17,6 +17,6 @@ jobs:
       - name: Delete tagged package versions older than 1 year (keep newest 10)
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          older-than: 1 year
+          older-than: 1 minute
           keep-n-tagged: 10
           dry-run: true

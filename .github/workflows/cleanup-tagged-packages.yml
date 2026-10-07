@@ -18,5 +18,4 @@ jobs:
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           older-than: 1 minute
-          keep-n-tagged: 10
-          dry-run: true
+          keep-n-tagged: 12

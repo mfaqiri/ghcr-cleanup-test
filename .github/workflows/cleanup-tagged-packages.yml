@@ -1,0 +1,22 @@
+name: Cleanup Old Tagged Packages
+
+on:
+  schedule:
+    # Runs every Sunday at 03:00 UTC — adjust as needed
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete tagged package versions older than 1 year (keep newest 10)
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          older-than: 1 year
+          keep-n-tagged: 10
+          dry-run: true

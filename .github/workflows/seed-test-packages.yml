@@ -1,0 +1,39 @@
+name: Seed Test Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Number of tagged versions to create"
+        required: true
+        default: "15"
+
+permissions:
+  packages: write   # <- grants the auto-generated token push rights
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install oras
+        uses: oras-project/setup-oras@v1
+
+      # This "login" is NOT manual — GITHUB_TOKEN already exists
+      # automatically for every workflow run, you never create or see it.
+      - name: Authenticate to GHCR (automatic, no setup needed)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io \
+            -u "${{ github.actor }}" \
+            --password-stdin
+
+      - name: Push N uniquely tagged dummy artifacts
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}
+          for i in $(seq 1 ${{ github.event.inputs.count }}); do
+            TAG="test-v$i"
+            echo "seed-data-$(date +%s%N)-$i" > seed.txt
+            oras push "$IMAGE:$TAG" \
+              --artifact-type application/vnd.test.seed.v1 \
+              seed.txt:text/plain
+            sleep 5
+          done

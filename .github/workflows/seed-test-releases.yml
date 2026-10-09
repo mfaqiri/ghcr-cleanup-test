@@ -1,0 +1,35 @@
+name: Seed Test Releases
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create releases with assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in $(seq 1 15); do
+            ts=$(date +%s)
+            tag="seed-v${i}-${ts}"
+
+            echo "Build output for ${tag}" > "asset-${i}.txt"
+            echo "Checksum: $(echo -n ${tag} | sha256sum | cut -d' ' -f1)" >> "asset-${i}.txt"
+
+            git tag "${tag}"
+            git push origin "${tag}"
+
+            gh release create "${tag}" "asset-${i}.txt" \
+              --title "${tag}" \
+              --notes "Seeded test release #${i} for cleanup testing"
+
+            echo "Created ${tag}"
+            sleep 2
+          done

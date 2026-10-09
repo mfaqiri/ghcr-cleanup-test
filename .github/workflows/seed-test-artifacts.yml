@@ -1,0 +1,41 @@
+name: Seed Test Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Number of artifacts to create in this run"
+        required: true
+        default: "15"
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate and upload N uniquely named artifacts
+        run: |
+          mkdir -p seed-artifacts
+          for i in $(seq 1 ${{ github.event.inputs.count }}); do
+            echo "seed-data-$(date +%s%N)-$i" > "seed-artifacts/artifact-$i.txt"
+          done
+
+      - name: Upload artifact 1..N (one upload step per artifact)
+        run: |
+          echo "This step is a placeholder; actual uploads happen via matrix below."
+
+  upload-matrix:
+    needs: seed
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - name: Create unique file for this artifact
+        run: echo "seed-data-$(date +%s%N)-${{ matrix.index }}" > seed.txt
+
+      - name: Upload artifact ${{ matrix.index }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifact-${{ matrix.index }}
+          path: seed.txt
+          retention-days: 90

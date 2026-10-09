@@ -1,7 +1,9 @@
-name: Cleanup Old Releases
+name: Cleanup Old Releases (Test)
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 0"   # daily at 3am UTC
+  workflow_dispatch:      # manual trigger, no inputs — just runs with the config below
 
 permissions:
   contents: write
@@ -10,9 +12,10 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - uses: freenet-actions/delete-old-releases@v3.0.1
+      - uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
-          max-age: "P1M"
-          dry-run: true
-          delete-tags: true
-          token: ${{ github.token }}
+          keep_latest: 10
+          delete_expired_data: 0
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

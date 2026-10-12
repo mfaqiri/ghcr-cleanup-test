@@ -1,9 +1,9 @@
-name: Cleanup Old Releases (Test)
+name: Cleanup Old Release Artifacts
 
 on:
   schedule:
-    - cron: "0 3 * * 0"   # daily at 3am UTC
-  workflow_dispatch:      # manual trigger, no inputs — just runs with the config below
+    - cron: "0 15 1 1,4,7,10 *"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,10 +12,9 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - uses: dev-drprasad/delete-older-releases@v0.3.4
+      - uses: your-username/delete-old-release-artifacts@v1
         with:
-          keep_latest: 7
-          delete_expired_data: 2
-          delete_tags: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          keep-latest: "2"
+          max-age-days: "1"
+          dry-run: "true"
+          token: ${{ secrets.GITHUB_TOKEN }}

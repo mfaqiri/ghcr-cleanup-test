@@ -16,5 +16,5 @@ jobs:
         with:
           keep-latest: "2"
           max-age-days: "1"
-          dry-run: "true"
+          dry-run: "false"
           token: ${{ secrets.GITHUB_TOKEN }}
